@@ -12,9 +12,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Deploy to IPFS
-        uses: popovoleksandr/ipfs-pinata-deploy-action@v1
-        with:
-          pinataApiKey: ${{ secrets.PINATA_API_KEY }}
-          pinataSecretApiKey: ${{ secrets.PINATA_SECRET_API_KEY }}
-          path: ./
+      - name: Install dependencies
+        run: npm install axios form-data
+
+      - name: Deploy to IPFS manually via API
+        run: |
+          echo "Uploading to IPFS..."
+          curl -X POST "https://api.pinata.cloud/pinning/pinFileToIPFS" \
+               -H "pinata_api_key: ${{ secrets.PINATA_API_KEY }}" \
+               -H "pinata_secret_api_key: ${{ secrets.PINATA_SECRET_API_KEY }}" \
+               -F "file=@index.html"
